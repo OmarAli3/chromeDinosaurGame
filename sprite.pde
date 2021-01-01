@@ -20,7 +20,7 @@ class sprite {
     this.img=img;
     this.currentFrame=0;
     this.currentTime=millis();
-    this.speed=100;
+    this.speed=20;
     this.changeFrame=true;
   }
   void setPosition(int x, int y) {
@@ -48,13 +48,19 @@ class sprite {
     this.position.y+=yshift;
   }
   boolean onScreen() {
-    return this.position.x >= 0 && this.position.x <= screenWidth;
+    return this.position.x+this.getImage().width > 0;
   }
   void render() {
     image(this.getImage(), this.position.x, this.position.y);
   }
   void setSpeed(int speed) {
     this.speed=speed;
+  }
+  int getYPosition() {
+    return this.position.y;
+  }
+  int getXPosition() {
+    return this.position.x;
   }
 }
 
@@ -76,13 +82,13 @@ class Dino extends sprite {
   }
   void jump() {
     this.changeFrame=false;
-    this.setSpeed(0);
-    this.yGradient=-4;
+    this.setSpeed(2);
+    this.yGradient=-5;
     down=false;
   }
   void walk() {
-    this.setSpeed(0);
-    this.yGradient=2;
+    this.setSpeed(2);
+    this.yGradient=4;
     down=false;
   }
   void setDown() {
