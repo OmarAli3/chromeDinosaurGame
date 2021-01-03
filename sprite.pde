@@ -73,7 +73,7 @@ class Dino extends sprite {
     this.down=false;
   }
   void move(int xStep) {
-    if (!down)this.position.y=constrain(this.position.y+this.yGradient, 90, 200);
+    if (!down)this.position.y=constrain(this.position.y+this.yGradient, 80, 200);
     if (this.position.y>=200) {
       this.setSpeed(100);
       this.changeFrame=true;
@@ -88,7 +88,7 @@ class Dino extends sprite {
   }
   void walk() {
     this.setSpeed(2);
-    this.yGradient=4;
+    this.yGradient=5;
     down=false;
   }
   void setDown() {
@@ -102,7 +102,7 @@ class Dino extends sprite {
     down=false;
   }
   boolean jumped() {
-    return this.position.y==90;
+    return this.position.y==80;
   }
   boolean walking() {
     return this.position.y==200;
@@ -112,5 +112,18 @@ class Dino extends sprite {
   }
   boolean isUp() {
     return !this.down;
+  }
+  boolean collide(sprite s){
+    int xStart=this.getXPosition(),
+    xEnd=this.getImage().width/2+this.getXPosition(),
+    yStart=this.getYPosition(),
+    yEnd=this.getImage().height/2+this.getYPosition();
+    if((xStart>=s.getXPosition()&&xStart<=s.getImage().width/2+s.getXPosition()&&
+    yStart>=s.getYPosition()&&yStart<=s.getImage().height/2+s.getYPosition())||
+    
+    (xEnd>=s.getXPosition()&&xEnd<=s.getImage().width/2+s.getXPosition()&&
+    yEnd>=s.getYPosition()&&yEnd<=s.getImage().height/2+s.getYPosition())
+    )return true;
+    return false;
   }
 }
