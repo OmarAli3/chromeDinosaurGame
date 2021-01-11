@@ -118,12 +118,14 @@ class Dino extends sprite {
     xEnd=this.getImage().width/2+this.getXPosition(),
     yStart=this.getYPosition(),
     yEnd=this.getImage().height/2+this.getYPosition();
-    if((xStart>=s.getXPosition()&&xStart<=s.getImage().width/2+s.getXPosition()&&
-    yStart>=s.getYPosition()&&yStart<=s.getImage().height/2+s.getYPosition())||
+    if(((xStart>=s.getXPosition()&&xStart<=s.getImage().width/2+s.getXPosition())&&
+    ((yStart>=s.getYPosition()&&yStart<=s.getImage().height/2+s.getYPosition())||
+    (yEnd>=s.getYPosition()&&yEnd<=s.getImage().height/2+s.getYPosition())))||
     
-    (xEnd>=s.getXPosition()&&xEnd<=s.getImage().width/2+s.getXPosition()&&
-    yEnd>=s.getYPosition()&&yEnd<=s.getImage().height/2+s.getYPosition())
-    )return true;
+    ((xEnd>=s.getXPosition()&&xEnd<=s.getImage().width/2+s.getXPosition())&&
+    ((yStart>=s.getYPosition()&&yStart<=s.getImage().height+s.getYPosition())||
+    (yEnd>=s.getYPosition()&&yEnd<=s.getImage().height+s.getYPosition()))
+    ))return true;
     return false;
   }
 }

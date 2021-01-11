@@ -21,12 +21,12 @@ int randCactusPosition[]=new int[5],
   randCloudPosition[]=new int[4];
 int cactusStartPosition[] = {1100, 200};
 int cloudStartPosition[] = {500, 150};
-int birdStartPosition[] = {1000, 170};
+int birdStartPosition[] = {1000, 175};
 
 void setup()
 {
   size(1024, 512);
-  smooth();
+  //Loading images
   dinoImages[0] =loadImage("sprites/dino3.png");
   dinoImages[1] =loadImage("sprites/dino4.png");
 
@@ -44,10 +44,13 @@ void setup()
   groundLineImage[0]=loadImage("sprites/groundLine.png");
   gameOverImage[0]=loadImage("sprites/gameOver.png");
 
-  gameOver=new sprite(400, 100, gameOverImage);
+  //Initializing sprites
+  gameOver=new sprite(200, 80, gameOverImage);
   dino=new Dino(50, 200, dinoImages);
   bird=new sprite(-100, 0, birdImages);
   bird.setSpeed(70);
+
+  //Randomizing initial positions
   randCloudPosition[0]=cloudStartPosition[0];
   for (int i = 0; i < 3; i++) {
     cloud[i] = new sprite(randCloudPosition[i], cloudStartPosition[1]+(int)random(-70, -30), cloudImage);
@@ -69,11 +72,11 @@ long max(long a, long b) {
   if (a>b)return a;
   return b;
 }
-boolean running=false;
-void Stop() {
+boolean running=true;
+void Stop() {//Stoping the game and reset positions and score
   gameOver.render();
   score=0;
-  running=true;
+  running=false;
   bird.setPosition(-100, 0);
   for (int i=0; i<4; i++) {
     cactus[i].setPosition(randCactusPosition[i+1], 200);
@@ -82,14 +85,15 @@ void Stop() {
 }
 void draw()
 {
-  if (!running) {
-    if (millis()-scoreTime>100) {
+  if (running) {
+    if (millis()-scoreTime>100) {//Updating score every 100 ms
       score++;
       maxScore=max(maxScore, score);
-      if (score%200==0) backGround=255-backGround;
+      if (score%200==0) backGround=255-backGround; //Change the background every 200 score
       scoreTime=millis();
     }
 
+    //Re-random the positions of sprites if they out of the screen
     if (int(random(-200, 200))==0&&!bird.onScreen())bird.setPosition(birdStartPosition[0], birdStartPosition[1]);
     for (int i=0; i<2; i++)if (!groundLine[i].onScreen())groundLine[i].setPosition(groundLineImage[0].width, 230);
     for (int i=0; i<4; i++)if (!cactus[i].onScreen()) {
@@ -99,37 +103,46 @@ void draw()
     for (int i=0; i<3; i++)if (!cloud[i].onScreen()) {
       cloud[i].setPosition(randCloudPosition[i+1], cloudStartPosition[1]+(int)random(-70, -30));
     }
+
     background(backGround);
     textSize(20);
     fill(255-backGround);
     text("HI: "+maxScore+"  "+score, width-200, 30);
 
+    //Puting images of the sprites on the screen
     bird.render();
     groundLine[0].render();
     groundLine[1].render();
     for (int i=0; i<3; i++)cloud[i].render();
     for (int i=0; i<4; i++)cactus[i].render();
     dino.render();
+
+    //Check collisions
     if (dino.collide(bird))Stop();
     for (int i=0; i<4; i++)if (dino.collide(cactus[i]))Stop();
+
+    //moving the sprites
     dino.move(0);
     bird.move(-20);
     for (int i=0; i<3; i++)cloud[i].move(-1);
     groundLine[0].move(-6);
     groundLine[1].move(-6);
     for (int i=0; i<4; i++)cactus[i].move(-6);
-    //if(score>100)while(true);
-    if (dino.jumped()) dino.walk();
-  }
+
+    if (dino.jumped()) dino.walk();//Returning dino back to the ground if the dino is jumped
+  } 
   if (keyPressed)
   {
-    running=false;
-    if (keyCode == UP||key==' ') {
 
-      if (dino.walking()) dino.jump();
-    } else if (keyCode == DOWN) {
-      if (dino.isUp())dino.walk();
-      if (dino.walking()) dino.setDown();
+    if (key=='\n')running=true; //press enter to play again if game over
+
+    if (keyCode == UP||key==' ') {//jump if the up key or space is pressed 
+
+      if (dino.walking()) dino.jump(); //jump only if the dino is on the ground and wait for it if it is already jumped
+    } else if (keyCode == DOWN) {//Bring the dino's head down if the down key is pressed 
+
+      if (dino.isUp())dino.walk(); //if it is jumped and on the air increase its speed to get back to the gorund
+      if (dino.walking()) dino.setDown();//Bring the dino's head down if it is not
     }
-  } else if (dino.isDown()) dino.setUp();
+  } else if (dino.isDown()) dino.setUp();//Bring the dino's head up if it is not
 }
